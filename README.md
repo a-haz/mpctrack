@@ -1,12 +1,10 @@
 # Kinematic bicycle path tracking
 
-Linear time-varying model predictive control (LTV-MPC) and pure pursuit, compared on a kinematic bicycle with steering and acceleration actuators. Both controllers track the same reference paths at 6, 10, and 14 m/s. The plant includes first-order actuator lag and sensor noise.
-
-**All results are simulated.**
+Linear time-varying model predictive control (LTV-MPC) and pure pursuit, compared on a kinematic bicycle with steering and acceleration actuators. Both controllers track the same reference paths at 6, 10, and 14 m/s. The plant includes first-order actuator lag and sensor noise. All results are simulated.
 
 ## Overview
 
-The model is a planar kinematic bicycle augmented with first-order lags on steering and longitudinal acceleration. LTV-MPC linearizes that discrete-time model along a speed-scheduled path reference and solves a dense quadratic program for the steering and acceleration commands, including magnitude and rate limits. Pure pursuit uses the classical geometric steering law plus a PID speed loop. Pure pursuit saturates command magnitude. It does not enforce rate limits, so those violations are counted.
+The model is a planar kinematic bicycle augmented with first-order lags on steering and longitudinal acceleration. LTV-MPC linearizes that discrete-time model along a speed-scheduled path reference and solves a dense quadratic program for the steering and acceleration commands, including magnitude and rate limits. Pure pursuit uses the classical geometric steering law plus a PID speed loop. Pure pursuit saturates command magnitude but does not enforce rate limits, so its rate violations are counted.
 
 Tracking error is evaluated on the simulated truth state. Cross-track error is positive to the left of the path tangent:
 
@@ -111,9 +109,7 @@ The tracking columns below are deterministic for this source and noise seed. Sol
 
 ## Results
 
-All results are simulated. No physical vehicle, sensor log, or road test is included. Solve time is the measured duration of the control update inside that simulation.
-
-The numbers in this table are copied from [`docs/benchmark.csv`](docs/benchmark.csv).
+The table is [`docs/benchmark.csv`](docs/benchmark.csv). There is no physical vehicle or road test. Solve time is the measured duration of the control update inside the simulation.
 
 | controller | path | speed_mps | rms_cte_m | max_cte_m | rms_heading_deg | max_heading_deg | mean_solve_ms | max_solve_ms | constraint_violations |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
