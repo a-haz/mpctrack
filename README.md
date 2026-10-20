@@ -91,7 +91,7 @@ A constraint violation is one control step whose issued command exceeds a steeri
 
 ## Build and run
 
-Requirements: CMake 3.16 or newer, a C++17 compiler, and Python 3 with Matplotlib for the figures. GoogleTest 1.14.0 is downloaded by CMake at configure time.
+Requirements: CMake 3.16 or newer, a C++17 compiler, and Python 3 with Matplotlib for the figures (`python3 -m pip install -r scripts/requirements.txt`). GoogleTest 1.14.0 is downloaded by CMake at configure time.
 
 ```bash
 cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
