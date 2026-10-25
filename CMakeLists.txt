@@ -43,6 +43,7 @@ add_executable(bpt_tests
     tests/test_qp.cpp
     tests/test_constraints.cpp
     tests/test_closed_loop.cpp
+    tests/test_path.cpp
 )
 target_link_libraries(bpt_tests PRIVATE bpt GTest::gtest_main)
 target_compile_options(bpt_tests PRIVATE -Wall -Wextra -Wpedantic -Werror -Wshadow)
