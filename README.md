@@ -151,6 +151,7 @@ GoogleTest covers:
 - the QP solver on unconstrained, bound, equality, half-plane, and rate-limited problems with known solutions
 - LTV-MPC command limits and rate limits on a tight curve
 - both controllers closing the loop onto a straight line from a lateral and heading offset
+- the simulator's start state, sample count, constraint-violation counting, solve-time statistics, and seeded sensor noise
 
 ## Layout
 
