@@ -1,6 +1,7 @@
 #include "bpt/control.hpp"
 #include "bpt/simulator.hpp"
 
+#include <algorithm>
 #include <cmath>
 #include <fstream>
 #include <iomanip>
