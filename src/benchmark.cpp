@@ -5,19 +5,13 @@
 #include <fstream>
 #include <iomanip>
 #include <iostream>
-#include <stdexcept>
 #include <string>
 #include <vector>
 
 namespace {
 
-std::string argument(int argc, char** argv, const std::string& key, const std::string& fallback) {
-    for (int i = 1; i + 1 < argc; ++i) {
-        if (key == argv[i]) {
-            return argv[i + 1];
-        }
-    }
-    return fallback;
+void print_usage(std::ostream& out) {
+    out << "usage: bpt_benchmark [--csv PATH] [--trajectories PATH] [--paths PATH]\n";
 }
 
 unsigned scenario_seed(const std::string& name, double speed) {
@@ -31,10 +25,10 @@ unsigned scenario_seed(const std::string& name, double speed) {
     return hash;
 }
 
-void write_paths(const std::string& filename, const std::vector<bpt::Path>& paths) {
+bool write_paths(const std::string& filename, const std::vector<bpt::Path>& paths) {
     std::ofstream out(filename);
     if (!out) {
-        throw std::runtime_error("could not write " + filename);
+        return false;
     }
     out << "path,s,x,y\n";
     out << std::fixed << std::setprecision(5);
@@ -48,14 +42,31 @@ void write_paths(const std::string& filename, const std::vector<bpt::Path>& path
             out << path.name << "," << point.s << "," << point.x << "," << point.y << "\n";
         }
     }
+    return true;
 }
 
 }  // namespace
 
 int main(int argc, char** argv) {
-    const std::string csv_path = argument(argc, argv, "--csv", "docs/benchmark.csv");
-    const std::string trajectory_path = argument(argc, argv, "--trajectories", "docs/trajectories.csv");
-    const std::string paths_path = argument(argc, argv, "--paths", "docs/paths.csv");
+    std::string csv_path = "docs/benchmark.csv";
+    std::string trajectory_path = "docs/trajectories.csv";
+    std::string paths_path = "docs/paths.csv";
+    for (int i = 1; i < argc; ++i) {
+        const std::string arg = argv[i];
+        if (arg == "--csv" && i + 1 < argc) {
+            csv_path = argv[++i];
+        } else if (arg == "--trajectories" && i + 1 < argc) {
+            trajectory_path = argv[++i];
+        } else if (arg == "--paths" && i + 1 < argc) {
+            paths_path = argv[++i];
+        } else if (arg == "--help") {
+            print_usage(std::cout);
+            return 0;
+        } else {
+            print_usage(std::cerr);
+            return 2;
+        }
+    }
 
     const bpt::VehicleParams vehicle;
     const bpt::MpcParams mpc_tuning;
@@ -65,7 +76,10 @@ int main(int argc, char** argv) {
     const std::vector<double> speeds = {6.0, 10.0, 14.0};
     const double s0 = 8.0;
 
-    write_paths(paths_path, paths);
+    if (!write_paths(paths_path, paths)) {
+        std::cerr << "Could not write " << paths_path << "\n";
+        return 1;
+    }
 
     std::ofstream csv(csv_path);
     std::ofstream trajectories(trajectory_path);

@@ -52,3 +52,8 @@ target_link_libraries(bpt_tests PRIVATE bpt GTest::gtest_main)
 target_compile_options(bpt_tests PRIVATE -Wall -Wextra -Wpedantic -Werror -Wshadow)
 include(GoogleTest)
 gtest_discover_tests(bpt_tests)
+
+# An unknown option must print the usage line instead of running the
+# benchmark with default output paths.
+add_test(NAME bpt_benchmark_rejects_unknown_option COMMAND bpt_benchmark --no-such-option)
+set_tests_properties(bpt_benchmark_rejects_unknown_option PROPERTIES PASS_REGULAR_EXPRESSION "usage: bpt_benchmark")
