@@ -132,7 +132,7 @@ The table is [`docs/benchmark.csv`](docs/benchmark.csv). There is no physical ve
 | ltv_mpc | double_lane_change | 14 | 0.157535 | 0.469588 | 2.853257 | 8.338396 | 4.4253 | 8.4874 | 0 |
 | pure_pursuit | double_lane_change | 14 | 0.170383 | 0.500948 | 2.697606 | 7.169131 | 0.0189 | 0.0418 | 3 |
 
-LTV-MPC stays inside every command constraint on all 18 runs (`constraint_violations` is 0). Mean solve time is about 4 ms per step. Pure pursuit is faster (under 0.03 ms mean) and, at 6 m/s, has a smaller RMS cross-track error on the straight-to-curve path (0.012629 m versus 0.021101 m) and on the figure-eight (0.011869 m versus 0.021841 m). Those pure-pursuit commands break the steering-rate limit on 64, 183, and 90 steps of the three 6 m/s runs.
+LTV-MPC stays inside every command constraint on all 9 of its runs (`constraint_violations` is 0). Mean solve time is about 4 ms per step. Pure pursuit is faster (under 0.03 ms mean) and, at 6 m/s, has a smaller RMS cross-track error on the straight-to-curve path (0.012629 m versus 0.021101 m) and on the figure-eight (0.011869 m versus 0.021841 m). Those pure-pursuit commands break a rate limit on 64, 183, and 90 steps of the three 6 m/s runs. The steering rate accounts for 57, 166, and 83 of those steps and the acceleration rate for 8, 20, and 8, with a few steps breaking both.
 
 At 14 m/s the preview matters. LTV-MPC RMS cross-track error is 0.034421 m on the straight-to-curve path (pure pursuit 0.076095 m), 0.033275 m on the figure-eight (pure pursuit 0.093965 m), and 0.157535 m on the double lane change (pure pursuit 0.170383 m). The double lane change is the hardest case for both: at 10 m/s pure pursuit still has the lower RMS cross-track error (0.087952 m versus 0.102699 m).
 
