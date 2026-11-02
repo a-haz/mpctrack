@@ -67,7 +67,7 @@ is solved by a Mehrotra predictor-corrector interior-point method. Inequality pr
 | Steering rate | 0.80 |
 | Acceleration rate | 0.08 |
 
-Solver tolerance is `1e-6`, with at most 35 iterations and one retry at 70 iterations if the first attempt does not converge.
+Solver tolerance is `1e-6`, with at most 35 iterations and one retry at 70 iterations if the first attempt does not converge. An attempt that runs out of iterations still counts as converged when its best residual is below `1e-4`; in the committed runs every solve reached `1e-6`.
 
 ### Pure pursuit
 

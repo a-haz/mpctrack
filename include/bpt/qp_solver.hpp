@@ -14,7 +14,11 @@ namespace bpt {
 //
 // P must be symmetric positive definite when inequalities are present.
 // Equality-only and unconstrained problems are solved by a direct KKT factorization.
-// Inequalities use a Mehrotra predictor-corrector interior-point method.
+// Inequalities use a Mehrotra predictor-corrector interior-point method. With
+// inequalities only, a run that does not reach `tolerance` within
+// `max_iterations` returns the iterate with the smallest KKT residual and reports
+// success if that residual is below max(1e-5, 100 * tolerance). With equalities
+// as well, such a run reports failure.
 
 struct QpProblem {
     Matrix P;
