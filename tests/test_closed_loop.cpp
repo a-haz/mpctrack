@@ -5,6 +5,15 @@
 #include <gtest/gtest.h>
 
 #include <cmath>
+#include <type_traits>
+
+// Both controllers keep a reference to their path, so they must not accept a temporary.
+static_assert(!std::is_constructible_v<bpt::LtvMpc, bpt::Path, bpt::VehicleParams, bpt::MpcParams, double>);
+static_assert(std::is_constructible_v<bpt::LtvMpc, const bpt::Path&, bpt::VehicleParams, bpt::MpcParams, double>);
+static_assert(!std::is_constructible_v<bpt::PurePursuit, bpt::Path, bpt::VehicleParams, bpt::PurePursuitParams,
+                                       double, double>);
+static_assert(std::is_constructible_v<bpt::PurePursuit, const bpt::Path&, bpt::VehicleParams,
+                                      bpt::PurePursuitParams, double, double>);
 
 namespace {
 

@@ -51,6 +51,8 @@ public:
 class LtvMpc final : public Controller {
 public:
     LtvMpc(const Path& path, VehicleParams vehicle, MpcParams tuning, double speed_ref);
+    // The controller keeps a reference to the path, so a temporary would dangle.
+    LtvMpc(Path&& path, VehicleParams vehicle, MpcParams tuning, double speed_ref) = delete;
 
     void reset(const VehicleState& state) override;
     Command step(const VehicleState& measured) override;
@@ -73,6 +75,9 @@ class PurePursuit final : public Controller {
 public:
     PurePursuit(const Path& path, VehicleParams vehicle, PurePursuitParams tuning, double speed_ref,
                 double dt);
+    // The controller keeps a reference to the path, so a temporary would dangle.
+    PurePursuit(Path&& path, VehicleParams vehicle, PurePursuitParams tuning, double speed_ref,
+                double dt) = delete;
 
     void reset(const VehicleState& state) override;
     Command step(const VehicleState& measured) override;
