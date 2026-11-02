@@ -144,18 +144,10 @@ Command LtvMpc::step(const VehicleState& measured) {
         const std::vector<double> input_effect = Bd.multiply(input_ref);
 
         Matrix next_sensitivity = Ad * sensitivity;
-        next_sensitivity(0, 2 * k) += Bd(0, 0);
-        next_sensitivity(1, 2 * k) += Bd(1, 0);
-        next_sensitivity(2, 2 * k) += Bd(2, 0);
-        next_sensitivity(3, 2 * k) += Bd(3, 0);
-        next_sensitivity(4, 2 * k) += Bd(4, 0);
-        next_sensitivity(5, 2 * k) += Bd(5, 0);
-        next_sensitivity(0, 2 * k + 1) += Bd(0, 1);
-        next_sensitivity(1, 2 * k + 1) += Bd(1, 1);
-        next_sensitivity(2, 2 * k + 1) += Bd(2, 1);
-        next_sensitivity(3, 2 * k + 1) += Bd(3, 1);
-        next_sensitivity(4, 2 * k + 1) += Bd(4, 1);
-        next_sensitivity(5, 2 * k + 1) += Bd(5, 1);
+        for (int i = 0; i < 6; ++i) {
+            next_sensitivity(i, 2 * k) += Bd(i, 0);
+            next_sensitivity(i, 2 * k + 1) += Bd(i, 1);
+        }
 
         std::vector<double> next_affine = Ad.multiply(affine);
         for (int i = 0; i < 6; ++i) {
