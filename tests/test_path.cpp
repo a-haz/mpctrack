@@ -5,6 +5,7 @@
 
 #include <cmath>
 #include <cstddef>
+#include <limits>
 
 namespace {
 
@@ -51,6 +52,15 @@ TEST(PathSample, ClampsOutsideRange) {
     EXPECT_NEAR(before.y, 0.0, 1e-12);
     EXPECT_NEAR(after.x, 2.0, 1e-12);
     EXPECT_NEAR(after.y, 1.0, 1e-12);
+}
+
+TEST(PathSample, NanArcLengthReturnsTheFirstPoint) {
+    bpt::Path path;
+    path.points.push_back(bpt::PathPoint{0.0, 3.0, -1.0, 0.2, 0.0});
+    path.points.push_back(bpt::PathPoint{1.0, 4.0, -1.0, 0.2, 0.0});
+    const bpt::PathPoint p = path.sample(std::numeric_limits<double>::quiet_NaN());
+    EXPECT_EQ(p.x, 3.0);
+    EXPECT_EQ(p.y, -1.0);
 }
 
 TEST(PathSample, StraightLineMatchesArcLength) {

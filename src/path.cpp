@@ -49,7 +49,9 @@ PathPoint Path::sample(double s) const {
     if (points.empty()) {
         return empty;
     }
-    if (s <= points.front().s) {
+    // Negated so that a NaN arc length also returns here; the search below
+    // would otherwise land on index 0 and read points[-1].
+    if (!(s > points.front().s)) {
         return points.front();
     }
     if (s >= points.back().s) {
