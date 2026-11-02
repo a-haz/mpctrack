@@ -32,7 +32,6 @@ void expect_straight_recovery(bpt::Controller& controller, const bpt::Path& path
     bpt::SimConfig config = straight_config();
     bpt::VehicleState truth = offset_start();
     controller.reset(truth);
-    bpt::Input previous{};
     double s_hint = -1.0;
     const int steps = static_cast<int>(std::llround(config.duration / config.dt));
     double initial_cte = 0.0;
@@ -50,8 +49,6 @@ void expect_straight_recovery(bpt::Controller& controller, const bpt::Path& path
         final_cte = projection.cte;
         final_heading = bpt::degrees(bpt::wrap_to_pi(truth.psi - projection.psi));
         truth = bpt::integrate_rk4(truth, command.input, params, config.dt);
-        previous = command.input;
-        (void)previous;
     }
     EXPECT_GT(initial_cte, 1.0);
     EXPECT_LT(std::abs(final_cte), 0.20);
