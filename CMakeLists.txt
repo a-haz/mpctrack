@@ -42,6 +42,7 @@ add_executable(bpt_tests
     tests/test_bicycle.cpp
     tests/test_qp.cpp
     tests/test_constraints.cpp
+    tests/test_matrix.cpp
     tests/test_closed_loop.cpp
     tests/test_path.cpp
     tests/test_pure_pursuit.cpp
