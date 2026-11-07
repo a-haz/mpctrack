@@ -3,6 +3,7 @@
 #include <gtest/gtest.h>
 
 #include <cmath>
+#include <vector>
 
 namespace {
 
@@ -141,4 +142,74 @@ TEST(QpSolver, EqualityWithActiveInequality) {
     ASSERT_EQ(solution.x.size(), 2u);
     EXPECT_NEAR(solution.x[0], 0.8, 1e-5);
     EXPECT_NEAR(solution.x[1], 0.2, 1e-5);
+}
+
+namespace {
+
+// Same problem as BoxAndRateLimits. Solution is (0.4, 0.6).
+bpt::QpProblem make_rate_limited_problem() {
+    bpt::QpProblem problem;
+    problem.P = bpt::Matrix(2, 2, 0.0);
+    problem.P(0, 0) = 2.0;
+    problem.P(1, 1) = 2.0;
+    problem.q = {0.0, -2.0};
+    problem.G = bpt::Matrix(6, 2, 0.0);
+    problem.h = {2.0, 2.0, 2.0, 2.0, 0.2, 0.2};
+    problem.G(0, 0) = 1.0;
+    problem.G(1, 0) = -1.0;
+    problem.G(2, 1) = 1.0;
+    problem.G(3, 1) = -1.0;
+    problem.G(4, 1) = 1.0;
+    problem.G(4, 0) = -1.0;
+    problem.G(5, 0) = 1.0;
+    problem.G(5, 1) = -1.0;
+    return problem;
+}
+
+bpt::QpSettings tight_settings() {
+    bpt::QpSettings settings;
+    settings.tolerance = 1e-9;
+    settings.max_iterations = 80;
+    return settings;
+}
+
+}  // namespace
+
+TEST(QpSolver, WarmStartAtOptimumKeepsSolution) {
+    const bpt::QpProblem problem = make_rate_limited_problem();
+    const std::vector<double> warm = {0.4, 0.6};
+    const bpt::QpSolution solution = bpt::solve_qp(problem, tight_settings(), &warm);
+    EXPECT_TRUE(solution.success);
+    ASSERT_EQ(solution.x.size(), 2u);
+    EXPECT_NEAR(solution.x[0], 0.4, 1e-5);
+    EXPECT_NEAR(solution.x[1], 0.6, 1e-5);
+}
+
+TEST(QpSolver, InfeasibleWarmStartStillConverges) {
+    // Violates the box and the rate limit, so those slacks start at their floor.
+    const bpt::QpProblem problem = make_rate_limited_problem();
+    const std::vector<double> warm = {5.0, -5.0};
+    const bpt::QpSolution solution = bpt::solve_qp(problem, tight_settings(), &warm);
+    EXPECT_TRUE(solution.success);
+    ASSERT_EQ(solution.x.size(), 2u);
+    EXPECT_NEAR(solution.x[0], 0.4, 1e-5);
+    EXPECT_NEAR(solution.x[1], 0.6, 1e-5);
+}
+
+TEST(QpSolver, WarmStartOfWrongSizeIsIgnored) {
+    const bpt::QpProblem problem = make_rate_limited_problem();
+    const std::vector<double> warm = {1.0, 2.0, 3.0};
+    const bpt::QpSolution solution = bpt::solve_qp(problem, tight_settings(), &warm);
+    EXPECT_TRUE(solution.success);
+    ASSERT_EQ(solution.x.size(), 2u);
+    EXPECT_NEAR(solution.x[0], 0.4, 1e-5);
+    EXPECT_NEAR(solution.x[1], 0.6, 1e-5);
+}
+
+TEST(QpSolver, MismatchedDimensionsAreRejected) {
+    bpt::QpProblem problem = make_rate_limited_problem();
+    problem.h.pop_back();
+    const bpt::QpSolution solution = bpt::solve_qp(problem);
+    EXPECT_FALSE(solution.success);
+    EXPECT_TRUE(solution.x.empty());
 }

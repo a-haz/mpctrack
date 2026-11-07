@@ -148,7 +148,7 @@ GoogleTest covers:
 
 - RK4 against straight-line, constant-acceleration, circular-arc, and actuator-lag closed forms
 - continuous and discrete Jacobians against central finite differences
-- the QP solver on unconstrained, bound, equality, half-plane, and rate-limited problems with known solutions
+- the QP solver on unconstrained, bound, equality, half-plane, and rate-limited problems with known solutions, plus warm starts and mismatched dimensions
 - LTV-MPC command limits and rate limits on a tight curve
 - both controllers closing the loop onto a straight line from a lateral and heading offset
 - the simulator's start state, sample count, constraint-violation counting, solve-time statistics, and seeded sensor noise
